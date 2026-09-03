@@ -10,7 +10,7 @@ interface SyncRow {
 }
 
 export interface SyncResult {
-	status: 'complete' | 'progress' | 'locked'
+	status: 'complete' | 'progress' | 'locked' | 'error'
 	indexedBlock?: number
 	targetBlock?: number
 	events?: number
@@ -60,10 +60,10 @@ export async function syncProtocol (env: Env): Promise<SyncResult> {
 			events: eventCount
 		}
 	} catch (error) {
-		const message = error instanceof Error ? error.message : String(error)
+		const name = error instanceof Error ? error.name : 'UnknownError'
 		await env.DB.prepare('UPDATE sync_state SET locked_until = 0, last_error = ?1 WHERE chain_id = ?2')
-			.bind(message.slice(0, 1000), config.chainId).run()
-		throw error
+			.bind(name, config.chainId).run()
+		return { status: 'error' }
 	}
 }
 

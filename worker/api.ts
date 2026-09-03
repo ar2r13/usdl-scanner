@@ -35,7 +35,7 @@ async function overview (env: Env) {
 	const config = protocolConfig(env)
 	const [state, sync] = await env.DB.batch([
 		env.DB.prepare('SELECT key, value, updated_block FROM protocol_state WHERE chain_id = ?1').bind(config.chainId),
-		env.DB.prepare('SELECT next_block, indexed_block, indexed_at, last_error FROM sync_state WHERE chain_id = ?1').bind(config.chainId)
+		env.DB.prepare("SELECT next_block, indexed_block, indexed_at, CASE WHEN last_error IS NULL THEN NULL ELSE 'Indexer sync failed' END AS last_error FROM sync_state WHERE chain_id = ?1").bind(config.chainId)
 	])
 	const values = Object.fromEntries((state.results as { key: string, value: string }[]).map(row => [row.key, row.value]))
 
@@ -120,7 +120,7 @@ async function status (env: Env) {
 	const error = configurationError(env)
 	if (error) return response({ configured: false, error })
 	const config = protocolConfig(env)
-	const row = await env.DB.prepare('SELECT * FROM sync_state WHERE chain_id = ?1').bind(config.chainId).first()
+	const row = await env.DB.prepare("SELECT chain_id, next_block, indexed_block, indexed_block_hash, indexed_at, locked_until, CASE WHEN last_error IS NULL THEN NULL ELSE 'Indexer sync failed' END AS last_error FROM sync_state WHERE chain_id = ?1").bind(config.chainId).first()
 
 	return response({ configured: true, chainId: config.chainId, ...row })
 }
