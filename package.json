@@ -1,0 +1,23 @@
+{
+	"version": "0.1.0",
+	"name": "usdl-scanner",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"check": "npm run typecheck && npm test && wrangler deploy --dry-run",
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev --test-scheduled",
+		"test": "vitest run",
+		"typecheck": "tsc -p worker/tsconfig.json",
+		"types": "wrangler types worker-configuration.d.ts"
+	},
+	"dependencies": {
+		"viem": "^2.37.3"
+	},
+	"devDependencies": {
+		"@types/node": "^24.3.0",
+		"typescript": "^5.9.2",
+		"vitest": "^3.2.4",
+		"wrangler": "^4.33.1"
+	}
+}

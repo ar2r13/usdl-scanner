@@ -1,0 +1,37 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "usdl-scanner",
+	"account_id": "e79ebea5f3b8451e09800c6ce2ebe474",
+	"main": "worker/index.ts",
+	"compatibility_date": "2026-09-02",
+	"compatibility_flags": ["nodejs_compat"],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "usdl-explorer",
+			"database_id": "98d6bffe-f118-431e-bef4-483140707eb5",
+			"migrations_dir": "./migrations"
+		}
+	],
+	"vars": {
+		"CHAIN_ID": "84532",
+		"CHAIN_NAME": "Base Sepolia",
+		"EXPLORER_URL": "https://sepolia.basescan.org",
+		"DEPLOYMENT_BLOCK": "46322387",
+		"CONFIRMATION_TAG": "safe",
+		"LOG_BLOCK_RANGE": "2000",
+		"MAX_RANGES_PER_RUN": "4",
+		"TOKEN_ADDRESS": "0x0656eA9c8b7a1F96B36951EBCCAE7917bCD96d79",
+		"SUPPLY_ADDRESS": "0x8e2EC338174649BE7425C1e64238A7575369F8E9",
+		"MINT_ADDRESS": "0xae07A34f8D727e44a0267a84A587A6738E4C0e5E",
+		"REDEMPTION_ADDRESS": "0x712884F127Fb26a89085F34e48B358d89Fe27f01",
+		"WHITELIST_ADDRESS": "0x1997f8412f1AA98176d4a5991C2f1754007d6209"
+	},
+	"triggers": {
+		"crons": ["* * * * *"]
+	},
+	"observability": {
+		"enabled": true,
+		"head_sampling_rate": 1
+	}
+}
