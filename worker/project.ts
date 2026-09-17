@@ -45,9 +45,9 @@ export function activityProjection (event: IndexedEvent): ActivityProjection | u
 			return projection('transfer', 'Transfer', `${from} → ${to}`, args.value, from, null, [from, to])
 		}
 		case 'Minted':
-			return projection('mint', 'Mint', `Issued to ${args.recipient}`, args.amount, args.recipient)
+			return projection('mint', 'Mint', `Issued to ${args.recipient}`, args.amount, args.recipient, null, [args.agent, args.recipient])
 		case 'RedemptionCreated':
-			return projection('redemption', `Redemption #${args.requestId}`, `Requested by ${args.user}`, args.amount, args.user, args.requestId)
+			return projection('redemption', `Redemption #${args.requestId}`, `Requested by ${args.user}`, args.amount, args.user, args.requestId, [args.user, args.payoutToken, args.payoutAddress])
 		case 'RedemptionPaid':
 			return projection('payout', `Payout registered · #${args.requestId}`, `Administrator assertion on chain ${args.destinationChainId}`, null, null, args.requestId)
 		case 'RedemptionDisputed':
@@ -55,7 +55,7 @@ export function activityProjection (event: IndexedEvent): ActivityProjection | u
 		case 'RedemptionBurned':
 			return projection('burn', `Burn · redemption #${args.requestId}`, `Finalized by ${args.operator}`, args.amount, args.operator, args.requestId)
 		case 'RedemptionRefunded':
-			return projection('refund', `Refund · redemption #${args.requestId}`, `Returned to ${args.user}`, args.amount, args.user, args.requestId)
+			return projection('refund', `Refund · redemption #${args.requestId}`, `Returned to ${args.user}`, args.amount, args.user, args.requestId, [args.operator, args.user])
 		case 'SupplyCapUpdateScheduled':
 			return projection('supply', 'Supply cap scheduled', `Activates at ${new Date(Number(args.activateAt) * 1000).toISOString()}`, args.newCap)
 		case 'SupplyCapUpdated':
@@ -63,7 +63,7 @@ export function activityProjection (event: IndexedEvent): ActivityProjection | u
 		case 'SupplyCapUpdateCancelled':
 			return projection('supply', 'Supply cap update cancelled', String(args.operationId))
 		case 'WhitelistStatusChanged':
-			return projection('whitelist', args.whitelisted ? 'Address whitelisted' : 'Address removed', String(args.account), null, args.account)
+			return projection('whitelist', args.whitelisted ? 'Address whitelisted' : 'Address removed', String(args.account), null, args.account, null, [args.account, args.operator])
 	}
 }
 

@@ -15,9 +15,11 @@ const base: IndexedEvent = {
 
 describe('activity projections', () => {
 	it('projects controller mints', () => {
-		const result = activityProjection({ ...base, args: { recipient: `0x${'3'.repeat(40)}`, amount: 25_000_000n } })
+		const agent = `0x${'4'.repeat(40)}`
+		const recipient = `0x${'3'.repeat(40)}`
+		const result = activityProjection({ ...base, args: { agent, recipient, amount: 25_000_000n } })
 
-		expect(result).toMatchObject({ kind: 'mint', amount: '25000000' })
+		expect(result).toMatchObject({ kind: 'mint', amount: '25000000', accounts: [agent, recipient] })
 	})
 
 	it('does not duplicate mint and burn Transfer events', () => {
@@ -40,6 +42,14 @@ describe('activity projections', () => {
 		const result = activityProjection({ ...base, name: 'RedemptionPaid', args: { requestId: 7n, destinationChainId: 1n } })
 
 		expect(result?.detail).toContain('Administrator assertion')
+	})
+
+	it('indexes whitelist account and operator', () => {
+		const account = `0x${'3'.repeat(40)}`
+		const operator = `0x${'4'.repeat(40)}`
+		const result = activityProjection({ ...base, name: 'WhitelistStatusChanged', args: { account, operator, whitelisted: true } })
+
+		expect(result?.accounts).toEqual([account, operator])
 	})
 })
 
